@@ -34,22 +34,57 @@ OLS5 = lm(form5, df)
 OLS6 = lm(form6, df)
 stargazer(OLS, OLS1, OLS2, OLS3, OLS4, OLS5, OLS6, title = "Resultados", align = TRUE, omit.stat = c("LL","ser","f"), no.space = TRUE)
 
-
-
+COV = vcovHC(OLS, type = 'HC0')
+robust = sqrt(diag(COV))
+COV1 = vcovHC(OLS1, type = 'HC0')
+robust1 = sqrt(diag(COV1))
+COV2 = vcovHC(OLS2, type = 'HC0')
+robust2 = sqrt(diag(COV2))
+COV3 = vcovHC(OLS3, type = 'HC0')
+robust3 = sqrt(diag(COV3))
+COV4 = vcovHC(OLS4, type = 'HC0')
+robust4 = sqrt(diag(COV4))
+COV5 = vcovHC(OLS5, type = 'HC0')
+robust5 = sqrt(diag(COV5))
+COV6 = vcovHC(OLS6, type = 'HC0')
+robust6 = sqrt(diag(COV6))
+stargazer(OLS, OLS1, OLS2, OLS3, OLS4, OLS5, OLS6, se = list(robust, robust1, robust2, robust3, robust4, robust5, robust6),
+          title = "Resultados", align = TRUE, omit.stat = c("LL","ser","f"), no.space = TRUE)
 
 
 rest1 = c('Sal_min', 'ln_pop', 'ln_pib', 'urbano_p', 'maxbenefit')
-rest2 = c('Em_p')
-a = linearHypothesis(OLS5, rest1, vcov. = hccm(OLS5, type = "hc0"))
-b = linearHypothesis(OLS5, rest2, vcov. = hccm(OLS5, type = "hc0"))
+rest2 = c('Em_p', 'terceirog_p')
+a = linearHypothesis(OLS6, rest1, vcov. = hccm(OLS6, type = "hc0"))
+b = linearHypothesis(OLS6, rest2, vcov. = hccm(OLS6, type = "hc0"))
 a
 b
 
-stargazer(a,b, title = "Resultados", align = TRUE, omit.stat = c("LL","ser","f"), no.space = TRUE)
+ 
+df2 = df
+df2$...11 = NULL
+stargazer(df2, type = 'text')
+
+stargazer(as.data.frame(df), type = 'text')
+
+summary(df$Desemprego_p)
 
 plot_usmap(data = df, values = "Desemprego_p", regions = 'states', color = "blue") + 
-  scale_fill_continuous(low = "white", high = "green", name = "Porcentagme de desemprego", label = scales::comma) + 
-  theme(legend.position = "right") +  theme_economist()
+  scale_fill_gradient2(low = "white", mid = "deepskyblue", high = "darkblue", 
+                       name = "Porcentagme de desemprego",midpoint = 3.5, label = scales::percent_format(scale = 1)) + 
+  theme(legend.position = "right",
+        axis.text.x = element_blank(),
+        axis.ticks.x = element_blank(),
+        axis.text.y = element_blank(),
+        axis.ticks.y = element_blank()) 
+
+plot_usmap(data = df, values = "Sal_min", regions = 'states', color = "blue") + 
+  scale_fill_gradient2(low = "white", mid = "deepskyblue", high = "darkblue", 
+                       name = "Salario minimo", midpoint = 8.8) + 
+  theme(legend.position = "right",
+        axis.text.x = element_blank(),
+        axis.ticks.x = element_blank(),
+        axis.text.y = element_blank(),
+        axis.ticks.y = element_blank()) 
 
 
 #Regressao d multiplicao: (i.e ver o "peso" de uma do PIBpc qnd eh urbano)
