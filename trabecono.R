@@ -56,10 +56,16 @@ coeftest(OLS6, vcov = vcovHC(OLS6, "HC0"))
 
 rest1 = c('Sal_min', 'ln_pop', 'ln_pib', 'urbano_p', 'maxbenefit')
 rest2 = c('Em_p', 'terceirog_p')
+rest3 = c('Sal_min', 'ln_pop')
+rest4 = c('ln_pib','urbano_p', 'maxbenefit')
 a = linearHypothesis(OLS6, rest1, vcov. = hccm(OLS6, type = "hc0"))
 b = linearHypothesis(OLS6, rest2, vcov. = hccm(OLS6, type = "hc0"))
+c = linearHypothesis(OLS6, rest3, vcov. = hccm(OLS6, type = "hc0"))
+d = linearHypothesis(OLS6, rest4, vcov. = hccm(OLS6, type = "hc0"))
 a
 b
+c
+
 stargazer(a,b, type = 'text')
 
 stargazer(as.data.frame(df), type = 'text')
@@ -92,4 +98,3 @@ reg2 <- ggplot(data = df) + geom_point(aes(x=Em_p, y=Desemprego_p), color = "#1F
   labs(x = 'Porcentagem Ensino Medio',y = 'Desemprego') + 
   theme_economist()
 reg2
-
