@@ -51,6 +51,8 @@ robust6 = sqrt(diag(COV6))
 stargazer(OLS, OLS1, OLS2, OLS3, OLS4, OLS5, OLS6, se = list(robust, robust1, robust2, robust3, robust4, robust5, robust6),
           title = "Resultados", align = TRUE, omit.stat = c("LL","ser","f"), no.space = TRUE)
 
+coeftest(OLS6, vcov = vcovHC(OLS6, "HC0"))
+
 
 rest1 = c('Sal_min', 'ln_pop', 'ln_pib', 'urbano_p', 'maxbenefit')
 rest2 = c('Em_p', 'terceirog_p')
@@ -58,15 +60,9 @@ a = linearHypothesis(OLS6, rest1, vcov. = hccm(OLS6, type = "hc0"))
 b = linearHypothesis(OLS6, rest2, vcov. = hccm(OLS6, type = "hc0"))
 a
 b
-
- 
-df2 = df
-df2$...11 = NULL
-stargazer(df2, type = 'text')
+stargazer(a,b, type = 'text')
 
 stargazer(as.data.frame(df), type = 'text')
-
-summary(df$Desemprego_p)
 
 plot_usmap(data = df, values = "Desemprego_p", regions = 'states', color = "blue") + 
   scale_fill_gradient2(low = "white", mid = "deepskyblue", high = "darkblue", 
@@ -86,5 +82,14 @@ plot_usmap(data = df, values = "Sal_min", regions = 'states', color = "blue") +
         axis.text.y = element_blank(),
         axis.ticks.y = element_blank()) 
 
+reg1 <- ggplot(data = df) + geom_point(aes(x=Sal_min, y=Desemprego_p), color = "#1F1B1B", size = 1, shape = 20) + 
+  geom_smooth(aes(x=Sal_min, y=Desemprego_p), color = "#9C1C2D", size = 1, method = "lm", se=T) +
+  labs(x = 'Salario Minimo',y = 'Desemprego') + 
+  theme_economist()
+reg1
+reg2 <- ggplot(data = df) + geom_point(aes(x=Em_p, y=Desemprego_p), color = "#1F1B1B", size = 1, shape = 20) + 
+  geom_smooth(aes(x=Em_p, y=Desemprego_p), color = "#9C1C2D", size = 1, method = "lm", se=T) +
+  labs(x = 'Porcentagem Ensino Medio',y = 'Desemprego') + 
+  theme_economist()
+reg2
 
-#Regressao d multiplicao: (i.e ver o "peso" de uma do PIBpc qnd eh urbano)
